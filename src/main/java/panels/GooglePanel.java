@@ -25,6 +25,7 @@ public class GooglePanel extends ImagePanel {
     HashMap<String, Integer> myMap = new HashMap<>();
 
     public GooglePanel(){
+        super("google.png", 0, 0, 110, 20);
         myMap.put("UNKNOWN", 0);
         myMap.put("VERY_UNLIKELY", 1);
         myMap.put("UNLIKELY", 2);
@@ -33,19 +34,19 @@ public class GooglePanel extends ImagePanel {
         myMap.put("VERY_LIKELY", 5);
     }
 
-    public void detectFaces() throws Exception, IOException {
-        List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
-        String filePath = "test.jpg";
+    public void detectFaces() {
+        try{
+            List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
+            String filePath = "test.jpg";
 
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+            ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
 
-        Image img = Image.newBuilder().setContent(imgBytes).build();
-        Feature feat = Feature.newBuilder().setType(Type.FACE_DETECTION).build();
-        AnnotateImageRequest request =
-                AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
-        requests.add(request);
+            Image img = Image.newBuilder().setContent(imgBytes).build();
+            Feature feat = Feature.newBuilder().setType(Type.FACE_DETECTION).build();
+            AnnotateImageRequest request =
+                    AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+            requests.add(request);
 
-        try {
             ImageAnnotatorClient client = ImageAnnotatorClient.create();
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();

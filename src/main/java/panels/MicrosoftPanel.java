@@ -21,100 +21,110 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MicrosoftPanel extends ImagePanel {
+    static final String url = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize";
+    static final String key1 = "8be954144c48494bb9adb738567e8f9c";
+    static final String key2 = "9cae81ef93fc4184b00673a4193ae007";
 
-	public void detectFaces() throws Exception {
+    public MicrosoftPanel(){
+        super("azure.png", 0, 0, 62, 20);
+    }
 
-		HttpClient httpclient = HttpClients.createDefault();
+	public void detectFaces() {
+		try {
+			HttpClient httpclient = HttpClients.createDefault();
 
-		URIBuilder uriBuilder = new URIBuilder(url);
+			URIBuilder uriBuilder = new URIBuilder(url);
 
-		URI uri = uriBuilder.build();
-		HttpPost request = new HttpPost(uri);
+			URI uri = uriBuilder.build();
+			HttpPost request = new HttpPost(uri);
 
-		request.setHeader("Content-Type", "application/octet-stream");
-		request.setHeader("Ocp-Apim-Subscription-Key", key1);
+			request.setHeader("Content-Type", "application/octet-stream");
+			request.setHeader("Ocp-Apim-Subscription-Key", key1);
 
-		FileEntity fileEnt = new FileEntity(new File("test.jpg"));
+			FileEntity fileEnt = new FileEntity(new File("test.jpg"));
 
-		request.setEntity(fileEnt);
-		HttpResponse response = httpclient.execute(request);
-		HttpEntity entity = response.getEntity();
+			request.setEntity(fileEnt);
+			HttpResponse response = httpclient.execute(request);
+			HttpEntity entity = response.getEntity();
 
-		if (entity != null) {
-			String jsonString = EntityUtils.toString(entity);
-			JSONArray json = new JSONArray(jsonString);
+			if (entity != null) {
+				String jsonString = EntityUtils.toString(entity);
+				JSONArray json = new JSONArray(jsonString);
 
-			BufferedImage image = ImageIO.read(new File("test.jpg"));
+				BufferedImage image = ImageIO.read(new File("test.jpg"));
 
-			this.setImage(image);
-			ArrayList<Emoji> overlays = new ArrayList<Emoji>();
-			
-			//get all recognized faces
-			for (int i = 0; i < json.length(); i++) {
-				JSONObject object = json.getJSONObject(i);
-				//contains bounding box of faces
-				JSONObject faceRectangle = object.getJSONObject("faceRectangle");
-				//containes scores of face emotions
-				JSONObject scores = object.getJSONObject("scores");
-				
-				
-				// "anger": 0.00300731952,
-				// "contempt": 5.14648448E-08,
-				// "disgust": 9.180124E-06,
-				// "fear": 0.0001912825,
-				// "happiness": 0.9875571,
-				// "neutral": 0.0009861537,
-				// "sadness": 1.889955E-05,
-				// "surprise": 0.008229999				
-				double max = 0.0;
-				int emotion = 0;
-				int j = 0;
-				for(Iterator iterator = scores.keys(); iterator.hasNext();) {
-				    String key = (String) iterator.next();
-				    double actual = scores.getDouble(key);
-				    if(actual > max) {
-				    	max = actual;
-				    	emotion = j;
-				    }
-				    j++;
+				this.setImage(image);
+				ArrayList<Emoji> overlays = new ArrayList<Emoji>();
+
+				//get all recognized faces
+				for (int i = 0; i < json.length(); i++) {
+					JSONObject object = json.getJSONObject(i);
+					//contains bounding box of faces
+					JSONObject faceRectangle = object.getJSONObject("faceRectangle");
+					//containes scores of face emotions
+					JSONObject scores = object.getJSONObject("scores");
+
+
+					// "anger": 0.00300731952,
+					// "contempt": 5.14648448E-08,
+					// "disgust": 9.180124E-06,
+					// "fear": 0.0001912825,
+					// "happiness": 0.9875571,
+					// "neutral": 0.0009861537,
+					// "sadness": 1.889955E-05,
+					// "surprise": 0.008229999
+					double max = 0.0;
+					int emotion = 0;
+					int j = 0;
+					for (Iterator iterator = scores.keys(); iterator.hasNext(); ) {
+						String key = (String) iterator.next();
+						double actual = scores.getDouble(key);
+						if (actual > max) {
+							max = actual;
+							emotion = j;
+						}
+						j++;
+					}
+
+					String filename = "neutral.png";
+					switch (emotion) {
+						case 0:
+							filename = "contempt.png";
+							break;
+						case 1:
+							filename = "surprise.png";
+							break;
+						case 2:
+							filename = "happy.png";
+							break;
+						case 3:
+							filename = "neutral.png";
+							break;
+						case 4:
+							filename = "sad.png";
+							break;
+						case 5:
+							filename = "disgust.png";
+							break;
+						case 6:
+							filename = "anger.png";
+							break;
+						case 7:
+							filename = "fear.png";
+							break;
+
+						default:
+							break;
+					}
+
+
+					overlays.add(new Emoji(faceRectangle.getInt("left"), faceRectangle.getInt("top"), faceRectangle.getInt("width"), faceRectangle.getInt("height"), filename));
 				}
 
-                String filename = "neutral.png";
-                switch (emotion) {
-                    case 0:
-                        filename = "contempt.png";
-                        break;
-                    case 1:
-                        filename = "surprise.png";
-                        break;
-                    case 2:
-                        filename = "happy.png";
-                        break;
-                    case 3:
-                        filename = "neutral.png";
-                        break;
-                    case 4:
-                        filename = "sad.png";
-                        break;
-                    case 5:
-                        filename = "disgust.png";
-                        break;
-                    case 6:
-                        filename = "anger.png";
-                        break;
-                    case 7:
-                        filename = "fear.png";
-                        break;
-
-                    default:
-                        break;
-                }
-
-
-				overlays.add(new Emoji(faceRectangle.getInt("left"), faceRectangle.getInt("top"),faceRectangle.getInt("width"), faceRectangle.getInt("height"), filename));
+				drawToBackground(overlays);
 			}
-
-			drawToBackground(overlays);
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 	}
 

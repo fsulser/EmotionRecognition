@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
@@ -19,16 +21,19 @@ import panels.KairosPanel;
 import panels.MicrosoftPanel;
 
 public class Frame extends JFrame {
-    MicrosoftPanel microsoftPanel = null;
-    GooglePanel googlePanel = null;
-    KairosPanel kairosPanel = null;
-    AmazonPanel amazonPanel = null;
+    private MicrosoftPanel microsoftPanel = null;
+    private GooglePanel googlePanel = null;
+    private KairosPanel kairosPanel = null;
+    private AmazonPanel amazonPanel = null;
+    private boolean takePicture = true;
+    private Webcam w;
 
     Frame() {
         microsoftPanel = new MicrosoftPanel();
         googlePanel = new GooglePanel();
         kairosPanel = new KairosPanel();
         amazonPanel = new AmazonPanel();
+        w = Webcam.getDefault();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -48,30 +53,53 @@ public class Frame extends JFrame {
     public void addKeyListener() {
         final Provider provider = Provider.getCurrentProvider(false);
         HotKeyListener listener = new HotKeyListener() {
-
             public void onHotKey(HotKey hotKey) {
-                System.out.println("started");
-                try {
-                    Webcam w = Webcam.getDefault();
-                    w.open(true);
 
-                    BufferedImage image = w.getImage();
+/*                if(takePicture){
+                    w.setViewSize(WebcamResolution.VGA.getSize());
 
-                    ImageIO.write(image, "JPG", new File("test.jpg"));
-                    w.close();
+                    WebcamPanel panel = new WebcamPanel(w);
+                    panel.setFPSDisplayed(true);
+                    panel.setDisplayDebugInfo(true);
+                    panel.setImageSizeDisplayed(true);
+                    panel.setMirrored(true);
+                    takePicture = false;
+                }else {
 
-                    BufferedImage bImg = ImageIO.read(new File("test.jpg"));
-                    microsoftPanel.setImage(bImg);
-                    googlePanel.setImage(bImg);
-                    kairosPanel.setImage(bImg);
-                    
-//                    microsoftPanel.detectFaces();
-//                    googlePanel.detectFaces();
-                    kairosPanel.detectFaces();
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+*/
+                    try {
+                        w.open(true);
+
+                        BufferedImage image = w.getImage();
+
+                        ImageIO.write(image, "JPG", new File("test.jpg"));
+                        w.close();
+
+                        BufferedImage bImg = ImageIO.read(new File("test.jpg"));
+                        microsoftPanel.setImage(bImg);
+                        googlePanel.setImage(bImg);
+                        kairosPanel.setImage(bImg);
+                        amazonPanel.setImage(bImg);
+
+                        new Thread(() ->{
+                            microsoftPanel.detectFaces();
+                        }){{start();}};
+                        new Thread(() ->{
+                            googlePanel.detectFaces();
+                        }){{start();}};
+                        new Thread(() ->{
+                            kairosPanel.detectFaces();
+                        }){{start();}};
+                        new Thread(() ->{
+                            amazonPanel.detectFaces();
+                        }){{start();}};
+
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    takePicture = true;
                 }
-            }
+//            }
         };
 
         provider.register(KeyStroke.getKeyStroke("ENTER"), listener);

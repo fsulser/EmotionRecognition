@@ -3,13 +3,11 @@ package panels;
 
 import Helper.Emoji;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -23,9 +21,13 @@ import java.util.Iterator;
 
 
 public class KairosPanel extends ImagePanel {
+    public KairosPanel(){
+        super("kairos.png", 0, 0, 92, 20);
+    }
+
     private static final String url = "https://api.kairos.com/v2/media";
-    private static final String key = "XXXXXXXX";
-    private static final String appId = "XXXXXXXS";
+    private static final String key = "8205d2eceeee6a1d2054096a9f8fa6ef";
+    private static final String appId = "2b2c56d5";
 
     public void detectFaces() {
 
