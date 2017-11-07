@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import java.io.PrintStream;
 
+import Helper.Emoji;
 import com.google.cloud.vision.v1.*;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.vision.v1.Image;
@@ -49,7 +50,7 @@ public class GooglePanel extends ImagePanel {
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
-            ArrayList<Integer[]> overlays = new ArrayList<Integer[]>();
+            ArrayList<Emoji> overlays = new ArrayList<Emoji>();
             for (AnnotateImageResponse res : responses) {
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
@@ -61,25 +62,25 @@ public class GooglePanel extends ImagePanel {
 
                     int max = Math.max(anger, Math.max(joy, surprise));
 
-                    int imageId = 3;
+                    String fileName = "neutral.png";
                     if(max == anger){
-                        imageId = 6;
+                        fileName = "anger.png";
                     }else if (max == surprise){
-                        imageId = 1;
+                        fileName = "surprise.png";
                     }else if(max == joy){
-                        imageId = 2;
+                        fileName = "happy.png";
                     }else if(max == sorrow){
-                        imageId = 4;
+                        fileName = "sad.png";
                     }
 
                     //if all are equal then it should be neutral
                     if(anger == joy && joy == surprise && surprise == sorrow){
-                        imageId = 3;
+                        fileName = "neutral.png";
                     }
 
                     //if max is unlike or less then neutral
                     if(max <=3){
-                        imageId = 3;
+                        fileName = "neutral.png";
                     }
 
                     Vertex vert0 = annotation.getBoundingPoly().getVertices(0);
@@ -89,9 +90,7 @@ public class GooglePanel extends ImagePanel {
                     int y = vert0.getY();
                     int width = -(vert0.getX()-vert1.getX());
                     int height = -(vert0.getY()-vert2.getY());
-                    overlays.add(new Integer[] {x, y, width, height, imageId});
-
-                    System.out.println("googl " + x+ " " + y+ " " + width + " " + height);
+                    overlays.add(new Emoji(x, y, width, height, fileName));
 
                 }
                 drawToBackground(overlays);

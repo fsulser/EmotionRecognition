@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
+import Helper.Emoji;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -46,7 +47,7 @@ public class MicrosoftPanel extends ImagePanel {
 			BufferedImage image = ImageIO.read(new File("test.jpg"));
 
 			this.setImage(image);
-			ArrayList<Integer[]> overlays = new ArrayList<Integer[]>();
+			ArrayList<Emoji> overlays = new ArrayList<Emoji>();
 			
 			//get all recognized faces
 			for (int i = 0; i < json.length(); i++) {
@@ -78,8 +79,39 @@ public class MicrosoftPanel extends ImagePanel {
 				    j++;
 				}
 
-				overlays.add(new Integer[] { faceRectangle.getInt("left"), faceRectangle.getInt("top"),
-						faceRectangle.getInt("width"), faceRectangle.getInt("height"), emotion });
+                String filename = "neutral.png";
+                switch (emotion) {
+                    case 0:
+                        filename = "contempt.png";
+                        break;
+                    case 1:
+                        filename = "surprise.png";
+                        break;
+                    case 2:
+                        filename = "happy.png";
+                        break;
+                    case 3:
+                        filename = "neutral.png";
+                        break;
+                    case 4:
+                        filename = "sad.png";
+                        break;
+                    case 5:
+                        filename = "disgust.png";
+                        break;
+                    case 6:
+                        filename = "anger.png";
+                        break;
+                    case 7:
+                        filename = "fear.png";
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+				overlays.add(new Emoji(faceRectangle.getInt("left"), faceRectangle.getInt("top"),faceRectangle.getInt("width"), faceRectangle.getInt("height"), filename));
 			}
 
 			drawToBackground(overlays);

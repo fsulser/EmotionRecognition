@@ -1,6 +1,7 @@
 package panels;
 
 
+import Helper.Emoji;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -23,8 +24,8 @@ import java.util.Iterator;
 
 public class KairosPanel extends ImagePanel {
     private static final String url = "https://api.kairos.com/v2/media";
-    private static final String key = "XXXXXXXXXXXX";
-    private static final String appId = "XXXXXXX";
+    private static final String key = "XXXXXXXX";
+    private static final String appId = "XXXXXXXS";
 
     public void detectFaces() {
 
@@ -49,7 +50,7 @@ public class KairosPanel extends ImagePanel {
             CloseableHttpResponse response = httpClient.execute(request);
             HttpEntity resultEntity = response.getEntity();
 
-            ArrayList<Integer[]> overlays = new ArrayList<Integer[]>();
+            ArrayList<Emoji> overlays = new ArrayList<Emoji>();
             if (resultEntity != null) {
                 String jsonString = EntityUtils.toString(resultEntity);
                 JSONObject jsonResult = new JSONObject(jsonString);
@@ -73,36 +74,34 @@ public class KairosPanel extends ImagePanel {
                         j++;
                     }
 
+                    String file = "neutral.png";
 
                     if(emotion == 0){
                         //anger
-                        emotion = 6;
+                        file = "anger.png";
                     }else if (emotion == 1){
                         //disgust
-                        emotion = 5;
+                        file = "disgust.png";
                     }else if(emotion == 2){
                         //fear
-                        emotion = 7;
+                        file = "fear.png";
                     }else if(emotion == 3){
                         //joy
-                        emotion = 2;
+                        file = "happy.png";
                     }else if(emotion == 4){
                         //sadness
-                        emotion = 4;
+                        file = "sad.png";
                     }else if(emotion == 5){
                         //surprise
-                        emotion = 1;
+                        file = "surprise.png";
                     }
 
                     if(max == 0){
                         //all equal --> neutral
-                        emotion = 3;
+                        file = "neutral.png";
                     }
 
-                    System.out.println(emotions.toString());
-
-                    overlays.add(new Integer[]{face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), emotion});
-
+                    overlays.add(new Emoji(face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), file));
                 }
 
                 drawToBackground(overlays);
