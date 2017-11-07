@@ -2,12 +2,8 @@ package FaceRecognition.com.acn;
 
 import javax.swing.SwingUtilities;
 
-public class App {
+class App {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new Frame();
-            }
-        });
+        SwingUtilities.invokeLater(Frame::new);
     }
 }

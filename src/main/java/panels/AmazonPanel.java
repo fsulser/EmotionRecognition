@@ -20,14 +20,12 @@ import javax.imageio.ImageIO;
 
 public class AmazonPanel extends ImagePanel {
     public AmazonPanel(){
-        super("amazon.png", 0, 0, 53, 20);
+        super("amazon.png", 53);
     }
 
     public void detectFaces() {
         AWSCredentials credentials;
-
         String photo = "test.jpg";
-        String bucket = "S3bucket";
 
         try {
             credentials = new ProfileCredentialsProvider("default").getCredentials();
@@ -51,7 +49,7 @@ public class AmazonPanel extends ImagePanel {
             List<FaceDetail> faceDetails = result.getFaceDetails();
             System.out.println(faceDetails.toString());
 
-            ArrayList<Emoji> overlays = new ArrayList<Emoji>();
+            ArrayList<Emoji> overlays = new ArrayList<>();
             for (FaceDetail face : faceDetails) {
                 //HAPPY | SAD | ANGRY | CONFUSED | DISGUSTED | SURPRISED | CALM | UNKNOWN
                 List<Emotion> emotions = face.getEmotions();

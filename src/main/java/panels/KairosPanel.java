@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 public class KairosPanel extends ImagePanel {
     public KairosPanel(){
-        super("kairos.png", 0, 0, 92, 20);
+        super("kairos.png", 92);
     }
 
     private static final String url = "https://api.kairos.com/v2/media";
@@ -52,7 +52,7 @@ public class KairosPanel extends ImagePanel {
             CloseableHttpResponse response = httpClient.execute(request);
             HttpEntity resultEntity = response.getEntity();
 
-            ArrayList<Emoji> overlays = new ArrayList<Emoji>();
+            ArrayList<Emoji> overlays = new ArrayList<>();
             if (resultEntity != null) {
                 String jsonString = EntityUtils.toString(resultEntity);
                 JSONObject jsonResult = new JSONObject(jsonString);

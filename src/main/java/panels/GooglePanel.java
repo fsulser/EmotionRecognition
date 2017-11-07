@@ -1,20 +1,11 @@
 package panels;
 
-import java.awt.*;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
-
-import java.io.PrintStream;
 
 import Helper.Emoji;
 import com.google.cloud.vision.v1.*;
 import com.google.cloud.vision.v1.Feature.Type;
-import com.google.cloud.vision.v1.Image;
 import com.google.protobuf.ByteString;
 
 import java.util.HashMap;
@@ -22,10 +13,10 @@ import java.util.List;
 
 
 public class GooglePanel extends ImagePanel {
-    HashMap<String, Integer> myMap = new HashMap<>();
+    private final HashMap<String, Integer> myMap = new HashMap<>();
 
     public GooglePanel(){
-        super("google.png", 0, 0, 110, 20);
+        super("google.png", 110);
         myMap.put("UNKNOWN", 0);
         myMap.put("VERY_UNLIKELY", 1);
         myMap.put("UNLIKELY", 2);
@@ -36,7 +27,7 @@ public class GooglePanel extends ImagePanel {
 
     public void detectFaces() {
         try{
-            List<AnnotateImageRequest> requests = new ArrayList<AnnotateImageRequest>();
+            List<AnnotateImageRequest> requests = new ArrayList<>();
             String filePath = "test.jpg";
 
             ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -51,7 +42,7 @@ public class GooglePanel extends ImagePanel {
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
-            ArrayList<Emoji> overlays = new ArrayList<Emoji>();
+            ArrayList<Emoji> overlays = new ArrayList<>();
             for (AnnotateImageResponse res : responses) {
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {

@@ -1,12 +1,9 @@
 package panels;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.imageio.ImageIO;
 
 import Helper.Emoji;
 import org.apache.http.HttpEntity;
@@ -21,12 +18,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MicrosoftPanel extends ImagePanel {
-    static final String url = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize";
-    static final String key1 = "8be954144c48494bb9adb738567e8f9c";
-    static final String key2 = "9cae81ef93fc4184b00673a4193ae007";
+    private static final String url = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize";
+    private static final String key1 = "8be954144c48494bb9adb738567e8f9c";
 
     public MicrosoftPanel(){
-        super("azure.png", 0, 0, 62, 20);
+        super("azure.png", 62);
     }
 
 	public void detectFaces() {
@@ -51,11 +47,7 @@ public class MicrosoftPanel extends ImagePanel {
 				String jsonString = EntityUtils.toString(entity);
 				JSONArray json = new JSONArray(jsonString);
 
-				BufferedImage image = ImageIO.read(new File("test.jpg"));
-
-				this.setImage(image);
-				ArrayList<Emoji> overlays = new ArrayList<Emoji>();
-
+				ArrayList<Emoji> overlays = new ArrayList<>();
 				//get all recognized faces
 				for (int i = 0; i < json.length(); i++) {
 					JSONObject object = json.getJSONObject(i);

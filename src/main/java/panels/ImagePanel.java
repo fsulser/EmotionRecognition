@@ -20,15 +20,15 @@ public class ImagePanel extends JPanel{
 	private int vendorWidth = 0;
 	private int vendorHeight = 0;
 
-	public ImagePanel(String vendor, int X, int Y, int width, int height){
+	ImagePanel(String vendor, int width){
 	    this.vendorImage = vendor;
-	    this.vendorX = X;
-	    this.vendorY = Y;
+	    this.vendorX = 0;
+	    this.vendorY = 0;
 	    this.vendorWidth = width;
-	    this.vendorHeight = height;
+	    this.vendorHeight = 20;
     }
 
-	public void setImage(BufferedImage image) throws IOException {
+	public void setImage() throws IOException {
 		BufferedImage bImg = ImageIO.read(new File("test.jpg"));
 		System.out.println(bImg.getWidth() + " , " + bImg.getHeight());
 		backgroundImg = new BufferedImage(bImg.getWidth(), bImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -52,7 +52,7 @@ public class ImagePanel extends JPanel{
 		}
 	}
 
-	public void drawToBackground(ArrayList<Emoji> emojis) {
+	void drawToBackground(ArrayList<Emoji> emojis) {
 		try {
 			for (Emoji emoji: emojis) {
                 Graphics g = backgroundImg.getGraphics();

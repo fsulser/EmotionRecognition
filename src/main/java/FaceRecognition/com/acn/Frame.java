@@ -9,9 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
-import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 
@@ -20,13 +17,12 @@ import panels.GooglePanel;
 import panels.KairosPanel;
 import panels.MicrosoftPanel;
 
-public class Frame extends JFrame {
+class Frame extends JFrame {
     private MicrosoftPanel microsoftPanel = null;
     private GooglePanel googlePanel = null;
     private KairosPanel kairosPanel = null;
     private AmazonPanel amazonPanel = null;
-    private boolean takePicture = true;
-    private Webcam w;
+    private final Webcam w;
 
     Frame() {
         microsoftPanel = new MicrosoftPanel();
@@ -50,56 +46,44 @@ public class Frame extends JFrame {
         addKeyListener();
     }
 
-    public void addKeyListener() {
+    private void addKeyListener() {
         final Provider provider = Provider.getCurrentProvider(false);
-        HotKeyListener listener = new HotKeyListener() {
-            public void onHotKey(HotKey hotKey) {
+        //            }
+        HotKeyListener listener = hotKey -> {
 
 /*                if(takePicture){
-                    w.setViewSize(WebcamResolution.VGA.getSize());
+                w.setViewSize(WebcamResolution.VGA.getSize());
 
-                    WebcamPanel panel = new WebcamPanel(w);
-                    panel.setFPSDisplayed(true);
-                    panel.setDisplayDebugInfo(true);
-                    panel.setImageSizeDisplayed(true);
-                    panel.setMirrored(true);
-                    takePicture = false;
-                }else {
+                WebcamPanel panel = new WebcamPanel(w);
+                panel.setFPSDisplayed(true);
+                panel.setDisplayDebugInfo(true);
+                panel.setImageSizeDisplayed(true);
+                panel.setMirrored(true);
+                takePicture = false;
+            }else {
 
 */
-                    try {
-                        w.open(true);
+                try {
+                    w.open(true);
 
-                        BufferedImage image = w.getImage();
+                    BufferedImage image = w.getImage();
 
-                        ImageIO.write(image, "JPG", new File("test.jpg"));
-                        w.close();
+                    ImageIO.write(image, "JPG", new File("test.jpg"));
+                    w.close();
 
-                        BufferedImage bImg = ImageIO.read(new File("test.jpg"));
-                        microsoftPanel.setImage(bImg);
-                        googlePanel.setImage(bImg);
-                        kairosPanel.setImage(bImg);
-                        amazonPanel.setImage(bImg);
+                    microsoftPanel.setImage();
+                    googlePanel.setImage();
+                    kairosPanel.setImage();
+                    amazonPanel.setImage();
 
-                        new Thread(() ->{
-                            microsoftPanel.detectFaces();
-                        }){{start();}};
-                        new Thread(() ->{
-                            googlePanel.detectFaces();
-                        }){{start();}};
-                        new Thread(() ->{
-                            kairosPanel.detectFaces();
-                        }){{start();}};
-                        new Thread(() ->{
-                            amazonPanel.detectFaces();
-                        }){{start();}};
+                    new Thread(() -> microsoftPanel.detectFaces()){{start();}};
+                    new Thread(() -> googlePanel.detectFaces()){{start();}};
+                    new Thread(() -> kairosPanel.detectFaces()){{start();}};
+                    new Thread(() -> amazonPanel.detectFaces()){{start();}};
 
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    takePicture = true;
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
-//            }
         };
 
         provider.register(KeyStroke.getKeyStroke("ENTER"), listener);
