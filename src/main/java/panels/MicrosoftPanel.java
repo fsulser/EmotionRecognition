@@ -77,7 +77,7 @@ public class MicrosoftPanel extends ImagePanel {
 				    }
 				    j++;
 				}
-				
+
 				overlays.add(new Integer[] { faceRectangle.getInt("left"), faceRectangle.getInt("top"),
 						faceRectangle.getInt("width"), faceRectangle.getInt("height"), emotion });
 			}

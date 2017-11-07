@@ -91,6 +91,8 @@ public class GooglePanel extends ImagePanel {
                     int height = -(vert0.getY()-vert2.getY());
                     overlays.add(new Integer[] {x, y, width, height, imageId});
 
+                    System.out.println("googl " + x+ " " + y+ " " + width + " " + height);
+
                 }
                 drawToBackground(overlays);
             }

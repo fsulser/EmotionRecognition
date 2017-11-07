@@ -15,19 +15,19 @@ import com.tulskiy.keymaster.common.Provider;
 
 import panels.AmazonPanel;
 import panels.GooglePanel;
-import panels.IBMPanel;
+import panels.KairosPanel;
 import panels.MicrosoftPanel;
 
 public class Frame extends JFrame {
     MicrosoftPanel microsoftPanel = null;
     GooglePanel googlePanel = null;
-    IBMPanel ibmPanel = null;
+    KairosPanel kairosPanel = null;
     AmazonPanel amazonPanel = null;
 
     Frame() {
         microsoftPanel = new MicrosoftPanel();
         googlePanel = new GooglePanel();
-        ibmPanel = new IBMPanel();
+        kairosPanel = new KairosPanel();
         amazonPanel = new AmazonPanel();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,7 +35,7 @@ public class Frame extends JFrame {
         this.setLayout(new GridLayout(2, 2));
         getContentPane().add(microsoftPanel);
         getContentPane().add(googlePanel);
-        getContentPane().add(ibmPanel);
+        getContentPane().add(kairosPanel);
         getContentPane().add(amazonPanel);
 
         pack();
@@ -63,9 +63,11 @@ public class Frame extends JFrame {
                     BufferedImage bImg = ImageIO.read(new File("test.jpg"));
                     microsoftPanel.setImage(bImg);
                     googlePanel.setImage(bImg);
-
-                    microsoftPanel.detectFaces();
-                    googlePanel.detectFaces();
+                    kairosPanel.setImage(bImg);
+                    
+//                    microsoftPanel.detectFaces();
+//                    googlePanel.detectFaces();
+                    kairosPanel.detectFaces();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
