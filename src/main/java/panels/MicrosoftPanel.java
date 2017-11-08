@@ -22,7 +22,7 @@ public class MicrosoftPanel extends ImagePanel {
     private static final String key1 = "8be954144c48494bb9adb738567e8f9c";
 
     public MicrosoftPanel(){
-        super("azure.png", 62);
+        super("azure.png", 153);
     }
 
 	public void detectFaces() {
@@ -49,10 +49,13 @@ public class MicrosoftPanel extends ImagePanel {
 
 				ArrayList<Emoji> overlays = new ArrayList<>();
 				//get all recognized faces
+                System.out.println("MICROSOFT");
 				for (int i = 0; i < json.length(); i++) {
 					JSONObject object = json.getJSONObject(i);
 					//contains bounding box of faces
 					JSONObject faceRectangle = object.getJSONObject("faceRectangle");
+                    System.out.println(faceRectangle.toString());
+
 					//containes scores of face emotions
 					JSONObject scores = object.getJSONObject("scores");
 

@@ -16,7 +16,7 @@ public class GooglePanel extends ImagePanel {
     private final HashMap<String, Integer> myMap = new HashMap<>();
 
     public GooglePanel(){
-        super("google.png", 110);
+        super("google.png", 153);
         myMap.put("UNKNOWN", 0);
         myMap.put("VERY_UNLIKELY", 1);
         myMap.put("UNLIKELY", 2);
@@ -42,10 +42,12 @@ public class GooglePanel extends ImagePanel {
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
+            System.out.println("GOOGLE");
             ArrayList<Emoji> overlays = new ArrayList<>();
             for (AnnotateImageResponse res : responses) {
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
+                    System.out.println(annotation.toString());
 
                     int anger = myMap.get(annotation.getAngerLikelihood().toString());
                     int joy = myMap.get(annotation.getJoyLikelihood().toString());

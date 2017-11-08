@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 
 public class AmazonPanel extends ImagePanel {
     public AmazonPanel(){
-        super("amazon.png", 53);
+        super("amazon.png", 145);
     }
 
     public void detectFaces() {
@@ -45,12 +45,12 @@ public class AmazonPanel extends ImagePanel {
             // Replace Attribute.ALL with Attribute.DEFAULT to get default values.
 
             DetectFacesResult result = rekognitionClient.detectFaces(request);
-            System.out.println(result.toString());
             List<FaceDetail> faceDetails = result.getFaceDetails();
-            System.out.println(faceDetails.toString());
 
+            System.out.println("AMAZON:");
             ArrayList<Emoji> overlays = new ArrayList<>();
             for (FaceDetail face : faceDetails) {
+                System.out.print(face.toString());
                 //HAPPY | SAD | ANGRY | CONFUSED | DISGUSTED | SURPRISED | CALM | UNKNOWN
                 List<Emotion> emotions = face.getEmotions();
                 float max = 0.0f;

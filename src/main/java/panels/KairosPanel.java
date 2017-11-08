@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 public class KairosPanel extends ImagePanel {
     public KairosPanel(){
-        super("kairos.png", 92);
+        super("kairos.png", 231);
     }
 
     private static final String url = "https://api.kairos.com/v2/media";
@@ -58,8 +58,10 @@ public class KairosPanel extends ImagePanel {
                 JSONObject jsonResult = new JSONObject(jsonString);
                 JSONArray faces = jsonResult.getJSONArray("frames").getJSONObject(0).getJSONArray("people");
 
+                System.out.println("KAIROS");
                 for (int index = 0; index < faces.length(); index++) {
                     JSONObject face = faces.getJSONObject(index).getJSONObject("face");
+                    System.out.println(face.toString());
 
                     JSONObject emotions = faces.getJSONObject(index).getJSONObject("emotions");
 

@@ -25,7 +25,7 @@ public class ImagePanel extends JPanel{
 	    this.vendorX = 0;
 	    this.vendorY = 0;
 	    this.vendorWidth = width;
-	    this.vendorHeight = 20;
+	    this.vendorHeight = 50;
     }
 
 	public void setImage() throws IOException {
