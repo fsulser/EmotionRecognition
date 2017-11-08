@@ -54,7 +54,7 @@ public class GooglePanel extends ImagePanel {
                     int surprise = myMap.get(annotation.getSurpriseLikelihood().toString());
                     int sorrow = myMap.get(annotation.getSorrowLikelihood().toString());
 
-                    int max = Math.max(anger, Math.max(joy, surprise));
+                    int max = Math.max(anger, Math.max(joy, Math.max(surprise, sorrow)));
 
                     String fileName = "neutral.png";
                     if(max == anger){

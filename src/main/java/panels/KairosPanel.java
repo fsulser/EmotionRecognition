@@ -59,53 +59,50 @@ public class KairosPanel extends ImagePanel {
                 JSONArray faces = jsonResult.getJSONArray("frames").getJSONObject(0).getJSONArray("people");
 
                 System.out.println("KAIROS");
+                System.out.println(faces.toString());
                 for (int index = 0; index < faces.length(); index++) {
                     JSONObject face = faces.getJSONObject(index).getJSONObject("face");
-                    System.out.println(face.toString());
 
                     JSONObject emotions = faces.getJSONObject(index).getJSONObject("emotions");
 
                     double max = 0.0;
-                    int emotion = 0;
-                    int j = 0;
+                    String emotion = "neutral";
                     for(Iterator iterator = emotions.keys(); iterator.hasNext();) {
                         String key = (String) iterator.next();
                         double actual = emotions.getDouble(key);
                         if(actual > max) {
                             max = actual;
-                            emotion = j;
+                            emotion = key;
                         }
-                        j++;
                     }
 
-                    String file = "neutral.png";
+                    String filename = "neutral.png";
 
-                    if(emotion == 0){
-                        //anger
-                        file = "anger.png";
-                    }else if (emotion == 1){
-                        //disgust
-                        file = "disgust.png";
-                    }else if(emotion == 2){
-                        //fear
-                        file = "fear.png";
-                    }else if(emotion == 3){
-                        //joy
-                        file = "happy.png";
-                    }else if(emotion == 4){
-                        //sadness
-                        file = "sad.png";
-                    }else if(emotion == 5){
-                        //surprise
-                        file = "surprise.png";
+                    switch (emotion) {
+                        case "surprise":
+                            filename = "surprise.png";
+                            break;
+                        case "joy":
+                            filename = "happy.png";
+                            break;
+                        case "sadness":
+                            filename = "sad.png";
+                            break;
+                        case "disgust":
+                            filename = "disgust.png";
+                            break;
+                        case "anger":
+                            filename = "anger.png";
+                            break;
+                        case "fear":
+                            filename = "fear.png";
+                            break;
+                        default:
+                            filename = "neutral.png";
+                            break;
                     }
 
-                    if(max == 0){
-                        //all equal --> neutral
-                        file = "neutral.png";
-                    }
-
-                    overlays.add(new Emoji(face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), file));
+                    overlays.add(new Emoji(face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), filename));
                 }
 
                 drawToBackground(overlays);

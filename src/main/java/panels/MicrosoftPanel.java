@@ -53,8 +53,8 @@ public class MicrosoftPanel extends ImagePanel {
 				for (int i = 0; i < json.length(); i++) {
 					JSONObject object = json.getJSONObject(i);
 					//contains bounding box of faces
+					System.out.println(object.toString());
 					JSONObject faceRectangle = object.getJSONObject("faceRectangle");
-                    System.out.println(faceRectangle.toString());
 
 					//containes scores of face emotions
 					JSONObject scores = object.getJSONObject("scores");

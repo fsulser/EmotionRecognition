@@ -47,7 +47,7 @@ class Frame extends JFrame {
 
         w.setCustomViewSizes(nonStandardResolutions);
         w.setViewSize(WebcamResolution.HD720.getSize());
-        
+
         webcamPanel = new WebcamPanel(w);
         webcamPanel.setMirrored(true);
 
