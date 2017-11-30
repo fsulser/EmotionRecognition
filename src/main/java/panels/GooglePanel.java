@@ -90,7 +90,6 @@ public class GooglePanel extends ImagePanel {
                 drawToBackground(overlays);
             }
         }catch (Exception e){
-            e.printStackTrace();
         }
 
 

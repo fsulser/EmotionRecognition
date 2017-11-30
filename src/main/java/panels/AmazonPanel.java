@@ -58,13 +58,13 @@ public class AmazonPanel extends ImagePanel {
                 for (Emotion emotion: emotions) {
                     if(emotion.getConfidence()> max){
                         max = emotion.getConfidence();
-                        emotionName = String.valueOf(emotion.getClass());
+                        emotionName = String.valueOf(emotion.getType());
                     }
                 }
 
                 String filename = "neutral.png";
                 switch (emotionName) {
-                    case "Happy":
+                    case "HAPPY":
                         filename = "happy.png";
                         break;
                     case "SAD":
@@ -107,7 +107,6 @@ public class AmazonPanel extends ImagePanel {
             drawToBackground(overlays);
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

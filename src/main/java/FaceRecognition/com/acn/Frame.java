@@ -15,10 +15,7 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 
-import panels.AmazonPanel;
-import panels.GooglePanel;
-import panels.KairosPanel;
-import panels.MicrosoftPanel;
+import panels.*;
 
 class Frame extends JFrame {
     private MicrosoftPanel microsoftPanel = null;
@@ -43,7 +40,7 @@ class Frame extends JFrame {
                 WebcamResolution.PAL.getSize(),
                 WebcamResolution.HD720.getSize(),
         };
-        w = Webcam.getWebcams().get(1);
+        w = Webcam.getWebcams().get(0);
 
         w.setCustomViewSizes(nonStandardResolutions);
         w.setViewSize(WebcamResolution.HD720.getSize());
@@ -87,14 +84,15 @@ class Frame extends JFrame {
                         takePicture = false;
                     }else {
                         try {
-                            image = w.getImage();
+                            image =flippedImage(w.getImage());
 
-                            ImageIO.write(flippedImage(image), "JPG", new File("test.jpg"));
+                            ImageIO.write(image, "JPG", new File("test.jpg"));
 
-                            microsoftPanel.setImage();
-                            googlePanel.setImage();
-                            kairosPanel.setImage();
-                            amazonPanel.setImage();
+
+                            microsoftPanel.setImage(image);
+                            googlePanel.setImage(image);
+                            kairosPanel.setImage(image);
+                            amazonPanel.setImage(image);
 
                             frame.getContentPane().removeAll();
                             frame.setLayout(new GridLayout(2, 2));

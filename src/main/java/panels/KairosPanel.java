@@ -108,7 +108,6 @@ public class KairosPanel extends ImagePanel {
                 drawToBackground(overlays);
             }
         }catch(Exception e){
-            e.printStackTrace();
         }
     }
 }

@@ -28,8 +28,7 @@ public class ImagePanel extends JPanel{
 	    this.vendorHeight = 50;
     }
 
-	public void setImage() throws IOException {
-		BufferedImage bImg = ImageIO.read(new File("test.jpg"));
+	public void setImage(BufferedImage bImg) throws IOException {
 		System.out.println(bImg.getWidth() + " , " + bImg.getHeight());
 		backgroundImg = new BufferedImage(bImg.getWidth(), bImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = backgroundImg.getGraphics();

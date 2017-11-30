@@ -119,7 +119,6 @@ public class MicrosoftPanel extends ImagePanel {
 				drawToBackground(overlays);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
 		}
 	}
 
