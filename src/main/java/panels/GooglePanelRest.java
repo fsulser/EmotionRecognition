@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import Helper.Emoji;
-import com.google.cloud.vision.v1.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,10 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.HashMap;
-import java.util.List;
-
 
 public class GooglePanelRest extends ImagePanel {
     private final HashMap<String, Integer> myMap = new HashMap<>();
@@ -37,9 +33,8 @@ public class GooglePanelRest extends ImagePanel {
 
     public void detectFaces() {
         try{
-            String url = "https://vision.googleapis.com/v1/images:annotate?key=XXXX";
+            String url = "https://vision.googleapis.com/v1/images:annotate?key=XXX";
 
-            List<AnnotateImageRequest> requests = new ArrayList<>();
             String filePath = "test.jpg";
             File file = new File(filePath);
 
@@ -82,17 +77,12 @@ public class GooglePanelRest extends ImagePanel {
             ArrayList<Emoji> overlays = new ArrayList<>();
             if (entity != null) {
                 String responseString = EntityUtils.toString(entity);
-                JSONObject json = new JSONObject(responseString);
                 System.out.println("GOOGLE:");
-                System.out.println(json.toString());
+                System.out.println(responseString);
 
-                JSONArray responses = json.getJSONArray("responses");
-                System.out.println(responses.get(0).toString());
-
-                JSONArray annotations = responses.getJSONObject(0).getJSONArray("faceAnnotations");
+                JSONArray annotations = new JSONObject(responseString).getJSONArray("responses").getJSONObject(0).getJSONArray("faceAnnotations");
 
                 for (int i = 0; i < annotations.length(); i++) {
-                    JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
 
                     int anger = myMap.get(annotations.getJSONObject(i).getString("angerLikelihood"));
                     int joy = myMap.get(annotations.getJSONObject(i).getString("joyLikelihood"));
@@ -122,6 +112,7 @@ public class GooglePanelRest extends ImagePanel {
                     }
 
 
+                    JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
                     int vert0X = vertices.getJSONObject(0).getInt("x");
                     int vert0Y = vertices.getJSONObject(0).getInt("y");
                     int vert1X = vertices.getJSONObject(1).getInt("x");
@@ -132,14 +123,8 @@ public class GooglePanelRest extends ImagePanel {
 
                 }
             }
-
             drawToBackground(overlays);
-
-
         }catch (Exception e){
-            e.printStackTrace();
         }
-
-
     }
 }
