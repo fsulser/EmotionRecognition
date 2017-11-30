@@ -111,16 +111,26 @@ public class GooglePanelRest extends ImagePanel {
                         fileName = "neutral.png";
                     }
 
-
-                    JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
-                    int vert0X = vertices.getJSONObject(0).getInt("x");
-                    int vert0Y = vertices.getJSONObject(0).getInt("y");
-                    int vert1X = vertices.getJSONObject(1).getInt("x");
-                    int vert2Y = vertices.getJSONObject(2).getInt("y");
-                    int width = -(vert0X-vert1X);
-                    int height = -(vert0Y-vert2Y);
-                    overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
-
+                    try {
+                        JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
+                        int vert0X = vertices.getJSONObject(0).getInt("x");
+                        int vert0Y = vertices.getJSONObject(0).getInt("y");
+                        int vert1X = vertices.getJSONObject(1).getInt("x");
+                        int vert2Y = vertices.getJSONObject(2).getInt("y");
+                        int width = -(vert0X - vert1X);
+                        int height = -(vert0Y - vert2Y);
+                        overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
+                    }catch (Exception e){
+                        //if x or y is missing (google inconstistency) use fdBoundingPoly
+                        JSONArray vertices = annotations.getJSONObject(i).getJSONObject("fdBoundingPoly").getJSONArray("vertices");
+                        int vert0X = vertices.getJSONObject(0).getInt("x");
+                        int vert0Y = vertices.getJSONObject(0).getInt("y");
+                        int vert1X = vertices.getJSONObject(1).getInt("x");
+                        int vert2Y = vertices.getJSONObject(2).getInt("y");
+                        int width = -(vert0X - vert1X);
+                        int height = -(vert0Y - vert2Y);
+                        overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
+                    }
                 }
             }
             drawToBackground(overlays);
