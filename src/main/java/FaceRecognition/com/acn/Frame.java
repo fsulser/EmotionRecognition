@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -19,7 +18,7 @@ import panels.*;
 
 class Frame extends JFrame {
     private MicrosoftPanel microsoftPanel = null;
-    private GooglePanel googlePanel = null;
+    private GooglePanelRest googlePanel = null;
     private KairosPanel kairosPanel = null;
     private AmazonPanel amazonPanel = null;
     private final Webcam w;
@@ -32,7 +31,7 @@ class Frame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         microsoftPanel = new MicrosoftPanel();
-        googlePanel = new GooglePanel();
+        googlePanel = new GooglePanelRest();
         kairosPanel = new KairosPanel();
         amazonPanel = new AmazonPanel();
 
@@ -70,7 +69,6 @@ class Frame extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                System.out.println(e.getKeyCode());
                 if(e.getKeyCode() == 33 || e.getKeyCode() == 34 || e.getKeyCode() == 116 || e.getKeyCode() ==46){
                     if(takePicture){
                         frame.getContentPane().removeAll();
@@ -87,6 +85,7 @@ class Frame extends JFrame {
                             image =flippedImage(w.getImage());
 
                             ImageIO.write(image, "JPG", new File("test.jpg"));
+//                            image = ImageIO.read(new File("test.jpg"));
 
 
                             microsoftPanel.setImage(image);

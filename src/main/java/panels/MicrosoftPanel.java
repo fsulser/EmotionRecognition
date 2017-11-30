@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 public class MicrosoftPanel extends ImagePanel {
     private static final String url = "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize";
-    private static final String key1 = "8be954144c48494bb9adb738567e8f9c";
+    private static final String key1 = "XXX";
 
     public MicrosoftPanel(){
         super("azure.png", 153);

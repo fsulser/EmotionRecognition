@@ -29,7 +29,6 @@ public class ImagePanel extends JPanel{
     }
 
 	public void setImage(BufferedImage bImg) throws IOException {
-		System.out.println(bImg.getWidth() + " , " + bImg.getHeight());
 		backgroundImg = new BufferedImage(bImg.getWidth(), bImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = backgroundImg.getGraphics();
 		g.drawImage(bImg, 0, 0, this);

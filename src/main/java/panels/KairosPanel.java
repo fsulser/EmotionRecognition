@@ -26,8 +26,8 @@ public class KairosPanel extends ImagePanel {
     }
 
     private static final String url = "https://api.kairos.com/v2/media";
-    private static final String key = "8205d2eceeee6a1d2054096a9f8fa6ef";
-    private static final String appId = "2b2c56d5";
+    private static final String key = "XXX";
+    private static final String appId = "XXX";
 
     public void detectFaces() {
 
