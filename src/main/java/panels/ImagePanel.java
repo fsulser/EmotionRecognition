@@ -64,5 +64,5 @@ public class ImagePanel extends JPanel{
 		}
 		repaint();
 	}
-	
+
 }

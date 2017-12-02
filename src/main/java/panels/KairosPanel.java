@@ -21,13 +21,13 @@ import java.util.Iterator;
 
 
 public class KairosPanel extends ImagePanel {
-    public KairosPanel(){
+    public KairosPanel() {
         super("kairos.png", 231);
     }
 
     private static final String url = "https://api.kairos.com/v2/media";
-    private static final String key = "XXX";
-    private static final String appId = "XXX";
+    private static final String key = "XXXX";
+    private static final String appId = "XXXX";
 
     public void detectFaces() {
 
@@ -52,62 +52,68 @@ public class KairosPanel extends ImagePanel {
             CloseableHttpResponse response = httpClient.execute(request);
             HttpEntity resultEntity = response.getEntity();
 
-            ArrayList<Emoji> overlays = new ArrayList<>();
             if (resultEntity != null) {
                 String jsonString = EntityUtils.toString(resultEntity);
-                JSONObject jsonResult = new JSONObject(jsonString);
-                JSONArray faces = jsonResult.getJSONArray("frames").getJSONObject(0).getJSONArray("people");
-
                 System.out.println("KAIROS");
-                System.out.println(faces.toString());
-                for (int index = 0; index < faces.length(); index++) {
-                    JSONObject face = faces.getJSONObject(index).getJSONObject("face");
+                System.out.println(jsonString);
 
-                    JSONObject emotions = faces.getJSONObject(index).getJSONObject("emotions");
-
-                    double max = 0.0;
-                    String emotion = "neutral";
-                    for(Iterator iterator = emotions.keys(); iterator.hasNext();) {
-                        String key = (String) iterator.next();
-                        double actual = emotions.getDouble(key);
-                        if(actual > max) {
-                            max = actual;
-                            emotion = key;
-                        }
-                    }
-
-                    String filename = "neutral.png";
-
-                    switch (emotion) {
-                        case "surprise":
-                            filename = "surprise.png";
-                            break;
-                        case "joy":
-                            filename = "happy.png";
-                            break;
-                        case "sadness":
-                            filename = "sad.png";
-                            break;
-                        case "disgust":
-                            filename = "disgust.png";
-                            break;
-                        case "anger":
-                            filename = "anger.png";
-                            break;
-                        case "fear":
-                            filename = "fear.png";
-                            break;
-                        default:
-                            filename = "neutral.png";
-                            break;
-                    }
-
-                    overlays.add(new Emoji(face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), filename));
-                }
-
-                drawToBackground(overlays);
+                drawToBackground(parseResult(jsonString));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
         }
+    }
+
+
+    private ArrayList<Emoji> parseResult(String jsonString) {
+        ArrayList<Emoji> overlays = new ArrayList<>();
+
+        JSONObject jsonResult = new JSONObject(jsonString);
+        JSONArray faces = jsonResult.getJSONArray("frames").getJSONObject(0).getJSONArray("people");
+
+        for (int index = 0; index < faces.length(); index++) {
+            JSONObject face = faces.getJSONObject(index).getJSONObject("face");
+
+            JSONObject emotions = faces.getJSONObject(index).getJSONObject("emotions");
+
+            double max = 0.0;
+            String emotion = "neutral";
+            for (Iterator iterator = emotions.keys(); iterator.hasNext(); ) {
+                String key = (String) iterator.next();
+                double actual = emotions.getDouble(key);
+                if (actual > max) {
+                    max = actual;
+                    emotion = key;
+                }
+            }
+
+            String filename = "neutral.png";
+
+            switch (emotion) {
+                case "surprise":
+                    filename = "surprise.png";
+                    break;
+                case "joy":
+                    filename = "happy.png";
+                    break;
+                case "sadness":
+                    filename = "sad.png";
+                    break;
+                case "disgust":
+                    filename = "disgust.png";
+                    break;
+                case "anger":
+                    filename = "anger.png";
+                    break;
+                case "fear":
+                    filename = "fear.png";
+                    break;
+                default:
+                    filename = "neutral.png";
+                    break;
+            }
+
+            overlays.add(new Emoji(face.getInt("x"), face.getInt("y"), face.getInt("width"), face.getInt("width"), filename));
+        }
+        return overlays;
     }
 }

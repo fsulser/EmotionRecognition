@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class GooglePanelRest extends ImagePanel {
     private final HashMap<String, Integer> myMap = new HashMap<>();
 
-    public GooglePanelRest(){
+    public GooglePanelRest() {
         super("google.png", 153);
         myMap.put("UNKNOWN", 0);
         myMap.put("VERY_UNLIKELY", 1);
@@ -32,14 +32,14 @@ public class GooglePanelRest extends ImagePanel {
     }
 
     public void detectFaces() {
-        try{
-            String url = "https://vision.googleapis.com/v1/images:annotate?key=XXX";
+        try {
+            String url = "https://vision.googleapis.com/v1/images:annotate?key=XXXX";
 
             String filePath = "test.jpg";
             File file = new File(filePath);
 
             FileInputStream fileInputStreamReader = new FileInputStream(file);
-            byte[] bytes = new byte[(int)file.length()];
+            byte[] bytes = new byte[(int) file.length()];
             fileInputStreamReader.read(bytes);
             String encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
 
@@ -48,7 +48,7 @@ public class GooglePanelRest extends ImagePanel {
                     "  \"requests\": [\n" +
                     "    {\n" +
                     "      \"image\": {\n" +
-                    "        \"content\": \""+encodedfile+"\" \n" +
+                    "        \"content\": \"" + encodedfile + "\" \n" +
                     "      },\n" +
                     "      \"features\": [\n" +
                     "        {\n" +
@@ -74,67 +74,72 @@ public class GooglePanelRest extends ImagePanel {
             HttpResponse response = httpclient.execute(request);
             HttpEntity entity = response.getEntity();
 
-            ArrayList<Emoji> overlays = new ArrayList<>();
             if (entity != null) {
-                String responseString = EntityUtils.toString(entity);
+                String jsonResult = EntityUtils.toString(entity);
                 System.out.println("GOOGLE:");
-                System.out.println(responseString);
+                System.out.println(jsonResult);
 
-                JSONArray annotations = new JSONObject(responseString).getJSONArray("responses").getJSONObject(0).getJSONArray("faceAnnotations");
 
-                for (int i = 0; i < annotations.length(); i++) {
-
-                    int anger = myMap.get(annotations.getJSONObject(i).getString("angerLikelihood"));
-                    int joy = myMap.get(annotations.getJSONObject(i).getString("joyLikelihood"));
-                    int surprise = myMap.get(annotations.getJSONObject(i).getString("surpriseLikelihood"));
-                    int sorrow = myMap.get(annotations.getJSONObject(i).getString("sorrowLikelihood"));
-
-                    int max = Math.max(anger, Math.max(joy, Math.max(surprise, sorrow)));
-
-                    String fileName = "neutral.png";
-                    if(max == anger){
-                        fileName = "anger.png";
-                    }else if (max == surprise){
-                        fileName = "surprise.png";
-                    }else if(max == joy){
-                        fileName = "happy.png";
-                    }else if(max == sorrow){
-                        fileName = "sad.png";
-                    }
-
-                    //if all are equal then it should be neutral
-                    if(anger == joy && joy == surprise && surprise == sorrow){
-                        fileName = "neutral.png";
-                    }
-                    //if max is unlike or less then neutral
-                    if(max <=3){
-                        fileName = "neutral.png";
-                    }
-
-                    try {
-                        JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
-                        int vert0X = vertices.getJSONObject(0).getInt("x");
-                        int vert0Y = vertices.getJSONObject(0).getInt("y");
-                        int vert1X = vertices.getJSONObject(1).getInt("x");
-                        int vert2Y = vertices.getJSONObject(2).getInt("y");
-                        int width = -(vert0X - vert1X);
-                        int height = -(vert0Y - vert2Y);
-                        overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
-                    }catch (Exception e){
-                        //if x or y is missing (google inconstistency) use fdBoundingPoly
-                        JSONArray vertices = annotations.getJSONObject(i).getJSONObject("fdBoundingPoly").getJSONArray("vertices");
-                        int vert0X = vertices.getJSONObject(0).getInt("x");
-                        int vert0Y = vertices.getJSONObject(0).getInt("y");
-                        int vert1X = vertices.getJSONObject(1).getInt("x");
-                        int vert2Y = vertices.getJSONObject(2).getInt("y");
-                        int width = -(vert0X - vert1X);
-                        int height = -(vert0Y - vert2Y);
-                        overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
-                    }
-                }
+                drawToBackground(parseResult(jsonResult));
             }
-            drawToBackground(overlays);
-        }catch (Exception e){
+        } catch (Exception e) {
         }
+    }
+
+    private ArrayList<Emoji> parseResult(String jsonResult) {
+        ArrayList<Emoji> overlays = new ArrayList<>();
+        JSONArray annotations = new JSONObject(jsonResult).getJSONArray("responses").getJSONObject(0).getJSONArray("faceAnnotations");
+
+        for (int i = 0; i < annotations.length(); i++) {
+
+            int anger = myMap.get(annotations.getJSONObject(i).getString("angerLikelihood"));
+            int joy = myMap.get(annotations.getJSONObject(i).getString("joyLikelihood"));
+            int surprise = myMap.get(annotations.getJSONObject(i).getString("surpriseLikelihood"));
+            int sorrow = myMap.get(annotations.getJSONObject(i).getString("sorrowLikelihood"));
+
+            int max = Math.max(anger, Math.max(joy, Math.max(surprise, sorrow)));
+
+            String fileName = "neutral.png";
+            if (max == anger) {
+                fileName = "anger.png";
+            } else if (max == surprise) {
+                fileName = "surprise.png";
+            } else if (max == joy) {
+                fileName = "happy.png";
+            } else if (max == sorrow) {
+                fileName = "sad.png";
+            }
+
+            //if all are equal then it should be neutral
+            if (anger == joy && joy == surprise && surprise == sorrow) {
+                fileName = "neutral.png";
+            }
+            //if max is unlike or less then neutral
+            if (max <= 3) {
+                fileName = "neutral.png";
+            }
+
+            try {
+                JSONArray vertices = annotations.getJSONObject(i).getJSONObject("boundingPoly").getJSONArray("vertices");
+                int vert0X = vertices.getJSONObject(0).getInt("x");
+                int vert0Y = vertices.getJSONObject(0).getInt("y");
+                int vert1X = vertices.getJSONObject(1).getInt("x");
+                int vert2Y = vertices.getJSONObject(2).getInt("y");
+                int width = -(vert0X - vert1X);
+                int height = -(vert0Y - vert2Y);
+                overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
+            } catch (Exception e) {
+                //if x or y is missing (google inconstistency) use fdBoundingPoly
+                JSONArray vertices = annotations.getJSONObject(i).getJSONObject("fdBoundingPoly").getJSONArray("vertices");
+                int vert0X = vertices.getJSONObject(0).getInt("x");
+                int vert0Y = vertices.getJSONObject(0).getInt("y");
+                int vert1X = vertices.getJSONObject(1).getInt("x");
+                int vert2Y = vertices.getJSONObject(2).getInt("y");
+                int width = -(vert0X - vert1X);
+                int height = -(vert0Y - vert2Y);
+                overlays.add(new Emoji(vert0X, vert0Y, width, height, fileName));
+            }
+        }
+        return overlays;
     }
 }

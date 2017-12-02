@@ -21,7 +21,7 @@ class Frame extends JFrame {
     private GooglePanelRest googlePanel = null;
     private KairosPanel kairosPanel = null;
     private AmazonPanel amazonPanel = null;
-    private final Webcam w;
+    private Webcam w;
     private boolean takePicture = false;
     private WebcamPanel webcamPanel;
     private JFrame frame = this;
@@ -30,11 +30,25 @@ class Frame extends JFrame {
     Frame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        //create instances of the four panels
         microsoftPanel = new MicrosoftPanel();
         googlePanel = new GooglePanelRest();
         kairosPanel = new KairosPanel();
         amazonPanel = new AmazonPanel();
 
+        instanciateWebcam();
+
+
+        this.add(webcamPanel);
+        pack();
+        setLocationByPlatform(true);
+        setVisible(true);
+        setFocusable(true);
+
+        addKeyListener();
+    }
+
+    private void instanciateWebcam(){
         Dimension[] nonStandardResolutions = new Dimension[] {
                 WebcamResolution.PAL.getSize(),
                 WebcamResolution.HD720.getSize(),
@@ -46,15 +60,6 @@ class Frame extends JFrame {
 
         webcamPanel = new WebcamPanel(w);
         webcamPanel.setMirrored(true);
-
-        this.add(webcamPanel);
-        pack();
-        setLocationByPlatform(true);
-        setVisible(true);
-        setFocusable(true);
-
-
-        addKeyListener();
     }
 
     private void addKeyListener() {
@@ -69,8 +74,10 @@ class Frame extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                //set keys for presenter
                 if(e.getKeyCode() == 33 || e.getKeyCode() == 34 || e.getKeyCode() == 116 || e.getKeyCode() ==46){
                     if(takePicture){
+                        //if results are shown remove them and show live image
                         frame.getContentPane().removeAll();
                         frame.setLayout(new BorderLayout());
 
@@ -81,13 +88,16 @@ class Frame extends JFrame {
                         frame.repaint();
                         takePicture = false;
                     }else {
+                        //if image should be captured and processed
                         try {
+                            //flip image horizontally
                             image =flippedImage(w.getImage());
 
+                            //save image to file
                             ImageIO.write(image, "JPG", new File("test.jpg"));
 //                            image = ImageIO.read(new File("test.jpg"));
 
-
+                            //add all four result panels and set images
                             microsoftPanel.setImage(image);
                             googlePanel.setImage(image);
                             kairosPanel.setImage(image);
@@ -128,6 +138,11 @@ class Frame extends JFrame {
         });
     }
 
+    /**
+     * flip image horizontal and return the flipped image
+     * @param bufferedImage
+     * @return
+     */
     public BufferedImage flippedImage(BufferedImage bufferedImage){
         BufferedImage flipped = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         AffineTransform tran = AffineTransform.getTranslateInstance(bufferedImage.getWidth(),0);
